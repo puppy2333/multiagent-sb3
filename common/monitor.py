@@ -36,6 +36,7 @@ class Monitor(gym.Wrapper[ObsType, ActType, ObsType, ActType]):
         reset_keywords: Tuple[str, ...] = (),
         info_keywords: Tuple[str, ...] = (),
         override_existing: bool = True,
+        n_agents: int = 15, 
     ):
         super().__init__(env=env)
         self.t_start = time.time()
@@ -52,8 +53,7 @@ class Monitor(gym.Wrapper[ObsType, ActType, ObsType, ActType]):
         self.reset_keywords = reset_keywords
         self.info_keywords = info_keywords
         self.allow_early_resets = allow_early_resets
-        self.n_agents = 15 # Currently we fix this
-        # self.rewards: List[float] = []
+        self.n_agents = n_agents
         self.rewards_list: List[List[float]] = [[] for _ in range(self.n_agents)]
         self.curr_agent = 0
         self.needs_reset = True

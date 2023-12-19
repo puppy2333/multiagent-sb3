@@ -181,7 +181,7 @@ class BaseAlgorithm(ABC):
         # Create and wrap the env if needed
         if env is not None:
             env = maybe_make_env(env, self.verbose)
-            env = self._wrap_env(env, self.verbose, monitor_wrapper)
+            env = self._wrap_env(env, self.verbose, monitor_wrapper, self.n_agents)
 
             self.observation_space = env.observation_space
             self.action_space = env.action_space
@@ -215,7 +215,7 @@ class BaseAlgorithm(ABC):
                 ), "Continuous action space must have a finite lower and upper bound"
 
     @staticmethod
-    def _wrap_env(env: GymEnv, verbose: int = 0, monitor_wrapper: bool = True) -> VecEnv:
+    def _wrap_env(env: GymEnv, verbose: int = 0, monitor_wrapper: bool = True, n_agents: int = 15) -> VecEnv:
         """ "
         Wrap environment with the appropriate wrappers if needed.
         For instance, to have a vectorized environment
@@ -232,7 +232,7 @@ class BaseAlgorithm(ABC):
             if not is_wrapped(env, Monitor) and monitor_wrapper:
                 if verbose >= 1:
                     print("Wrapping the env with a `Monitor` wrapper")
-                env = Monitor(env)
+                env = Monitor(env, n_agents=n_agents)
             if verbose >= 1:
                 print("Wrapping the env in a DummyVecEnv.")
             env = DummyVecEnv([lambda: env])  # type: ignore[list-item, return-value]
